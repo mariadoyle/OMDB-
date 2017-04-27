@@ -1,4 +1,4 @@
-# OMDB-
+# OMDB-API
 A web page that allows a user to search for movies in the OMDB by name.
 
 For this project, I used HTML5, CSS3, jQuery and Javascript. Please note that this is a small project and I chose to put the html, the css and the javascript files into one.If the project were any bigger, I would have created one html file, one css file and one javascript file for modularity purposes. 
