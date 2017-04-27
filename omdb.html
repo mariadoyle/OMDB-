@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+	<title>OMDB Movie Search</title>
+
+	<style type="text/css">
+
+		form
+		{
+			font-size: 22px;
+			font-weight: bold;
+			font-family: arial;
+			color: #000080;
+		}
+		
+		button
+		{
+			color: black;	
+			font-family: arial;
+			font-size: 12px;
+		}
+
+		div, input 
+		{
+			margin: 10px;
+			font-size: 15px;
+			font-weight: normal;
+			font-family: arial;
+			color: #000080;
+		}
+
+		form input[id="addMovie"]
+		{
+			color: black;
+			font-family: arial;
+			font-size: 12px;
+		}
+		
+	</style>
+
+</head>
+
+<body>
+
+  <form id="movie-form">
+    <label for="movie-input">1. Type movie title and press or click enter</label>
+    <input type="text" id="movie-input"><br>
+
+    <!-- Button triggers new movie to be added -->
+    <input id="addMovie" type="submit" value="Enter">
+  </form>
+
+    <div class="container">
+<h2>2. Click on movie button below to see your movie search results:</h2>
+
+<!--Rendered buttons will get dumped here-->
+  <div id="buttonsView"></div>
+
+  <!--Movies will get dumped here-->
+  <div id="moviesView"></div>
+
+<script src='http://code.jquery.com/jquery-2.1.3.min.js'>
+	
+</script>
+
+<script type="text/javascript">
+
+	// Initial array of movies, I'll start with my favorite
+	var movies = ['Cinema Paradiso'];
+
+	// Javascript
+
+	// displayMovieInfo function now re-renders the HTML to display the appropriate content
+	function displayMovieInfo()
+	{
+		var movie = $(this).attr('data-name');
+		var queryURL = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&r=json";
+		
+		// Creates AJAX call for the specific movie being called
+		$.ajax({url: queryURL, method: 'GET'}).done(function(response) 
+		{
+		// Creates a generic div to hold the movie
+			var movieDiv = $('<div class="movie">');
+
+			// Grabs the Rating Data
+			var rating = response.Rated;
+
+			// Creates an element to have the rating displayed
+			var elementOne = $('<p>').text( "Rating: " + rating);
+
+			// Displays the rating
+			movieDiv.append(elementOne);
+
+			// Grabs the release year
+			var released = response.Released;
+
+			// Creates an element to hold the release year
+			var elementTwo = $('<p>').text( "Released: " + released);
+
+			// Displays the release date
+			movieDiv.append(elementTwo);
+
+			// Grabs the plot
+			var plot = response.Plot;
+
+			// Creates an element to hold the plot
+			var elementThree = $('<p>').text( "Plot: " + plot);
+
+			// Appends the plot
+			movieDiv.append(elementThree);
+
+			// Creates an element to hold the image 
+			var image = $('<img>').attr("src", response.Poster);
+
+			// Appends the image
+			movieDiv.append(image);
+
+			// Puts the entire Movie above the previous movies
+			$('#moviesView').prepend(movieDiv);
+		});
+	}
+
+	// Generic function for displaying movie data 
+	function renderButtons()
+	{ 
+		// Deletes the movies prior to adding new movies (to avoid repeat buttons)
+		$('#buttonsView').empty();
+
+		// Loops through the array of movies
+		for (var i = 0; i < movies.length; i++)
+		{
+			// Then dynamicaly generates buttons for each movie in the array
+
+		    var a = $('<button>') 
+
+		    // Added a class
+		    a.addClass('movie');  
+		    
+		    a.attr('data-name', movies[i]); 
+		    // Added a data-attribute
+		    a.text(movies[i]); 
+		    // Provided the initial button text
+		    $('#buttonsView').append(a); // Added the button to the HTML
+		}
+	}
+
+	// This function handles events where one button is clicked
+	$('#addMovie').on('click', function()
+	{
+		// This line of code will grab the input from the textbox
+		var movie = $('#movie-input').val().trim();
+
+		// The movie from the textbox is then added to my one element array
+		movies.push(movie);
+		
+		// Our array then runs which handles the processing of our movie array
+		renderButtons();
+
+		// We have this line so that users can hit "enter" instead of clicking on button and it won't move to the next page
+		return false;
+	})
+
+	// Generic function for displaying the movieInfo
+	$(document).on('click', '.movie', displayMovieInfo);
+
+	// This calls the renderButtons() function
+	renderButtons();
+
+</script>
+
+</body>
+
+</html>
+
